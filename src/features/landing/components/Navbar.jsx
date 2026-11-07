@@ -1,8 +1,12 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
 import HeadsetMicOutlinedIcon from "@mui/icons-material/HeadsetMicOutlined";
+import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
+import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
+
 import { brand, navItems, routes } from "../data/landingData";
 
 const focusRing =
@@ -12,11 +16,29 @@ const secondaryButton = `inline-flex min-h-10 items-center justify-center rounde
 
 const primaryButton = `inline-flex min-h-10 items-center justify-center rounded-lg bg-(--primary) px-4 text-sm font-semibold text-(--surface) transition-colors hover:bg-(--primary-hover) ${focusRing}`;
 
+const themeButton = `inline-flex h-10 w-10 items-center justify-center rounded-lg border border-(--border) bg-(--surface) text-(--text) transition-colors hover:bg-(--surface-2) ${focusRing}`;
+
 export default function Navbar() {
 	const [isOpen, setIsOpen] = useState(false);
 
+	const [isDark, setIsDark] = useState(
+		() => localStorage.getItem("persona-theme") === "dark",
+	);
+
 	const closeMenu = () => setIsOpen(false);
 
+	// Apply theme and save preference
+	useEffect(() => {
+		document.documentElement.classList.toggle("dark", isDark);
+
+		localStorage.setItem("persona-theme", isDark ? "dark" : "light");
+	}, [isDark]);
+
+	const toggleTheme = () => {
+		setIsDark((prev) => !prev);
+	};
+
+	// Close mobile menu with Escape
 	useEffect(() => {
 		if (!isOpen) return undefined;
 
@@ -25,7 +47,10 @@ export default function Navbar() {
 		};
 
 		window.addEventListener("keydown", handleKeyDown);
-		return () => window.removeEventListener("keydown", handleKeyDown);
+
+		return () => {
+			window.removeEventListener("keydown", handleKeyDown);
+		};
 	}, [isOpen]);
 
 	return (
@@ -34,6 +59,7 @@ export default function Navbar() {
 				aria-label="Main navigation"
 				className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8"
 			>
+				{/* Logo */}
 				<a
 					href="#home"
 					onClick={closeMenu}
@@ -42,12 +68,13 @@ export default function Navbar() {
 					<span className="flex h-9 w-9 items-center justify-center rounded-xl bg-(--primary) text-(--surface)">
 						<HeadsetMicOutlinedIcon fontSize="small" />
 					</span>
+
 					<span className="text-lg font-semibold tracking-tight text-(--text)">
 						{brand.name}
 					</span>
 				</a>
 
-				{/* Desktop links */}
+				{/* Desktop Navigation */}
 				<ul className="hidden items-center gap-1 md:flex">
 					{navItems.map((item) => (
 						<li key={item.id}>
@@ -61,30 +88,56 @@ export default function Navbar() {
 					))}
 				</ul>
 
-				{/* Desktop actions */}
+				{/* Desktop Actions */}
 				<div className="hidden items-center gap-3 md:flex">
+					{/* Theme Toggle */}
+					<button
+						type="button"
+						onClick={toggleTheme}
+						aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
+						title={isDark ? "Light Mode" : "Dark Mode"}
+						className={themeButton}
+					>
+						{isDark ? <LightModeOutlinedIcon /> : <DarkModeOutlinedIcon />}
+					</button>
+
 					<Link to={routes.signIn} className={secondaryButton}>
 						Sign In
 					</Link>
+
 					<Link to={routes.getStarted} className={primaryButton}>
 						Get Started
 					</Link>
 				</div>
 
-				{/* Mobile menu toggle */}
-				<button
-					type="button"
-					onClick={() => setIsOpen((prev) => !prev)}
-					aria-label={isOpen ? "Close menu" : "Open menu"}
-					aria-expanded={isOpen}
-					aria-controls="mobile-menu"
-					className={`inline-flex h-11 w-11 items-center justify-center rounded-lg border border-(--border) bg-(--surface) text-(--text) transition-colors hover:bg-(--surface-2) md:hidden ${focusRing}`}
-				>
-					{isOpen ? <CloseIcon /> : <MenuIcon />}
-				</button>
+				{/* Mobile Actions */}
+				<div className="flex items-center gap-2 md:hidden">
+					{/* Theme Toggle */}
+					<button
+						type="button"
+						onClick={toggleTheme}
+						aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
+						title={isDark ? "Light Mode" : "Dark Mode"}
+						className={themeButton}
+					>
+						{isDark ? <LightModeOutlinedIcon /> : <DarkModeOutlinedIcon />}
+					</button>
+
+					{/* Mobile Menu Toggle */}
+					<button
+						type="button"
+						onClick={() => setIsOpen((prev) => !prev)}
+						aria-label={isOpen ? "Close menu" : "Open menu"}
+						aria-expanded={isOpen}
+						aria-controls="mobile-menu"
+						className={`inline-flex h-10 w-10 items-center justify-center rounded-lg border border-(--border) bg-(--surface) text-(--text) transition-colors hover:bg-(--surface-2) ${focusRing}`}
+					>
+						{isOpen ? <CloseIcon /> : <MenuIcon />}
+					</button>
+				</div>
 			</nav>
 
-			{/* Mobile menu */}
+			{/* Mobile Menu */}
 			{isOpen && (
 				<div
 					id="mobile-menu"
@@ -104,6 +157,7 @@ export default function Navbar() {
 						))}
 					</ul>
 
+					{/* Mobile Auth Actions */}
 					<div className="mx-auto flex max-w-7xl flex-col gap-3 px-4 pb-5 pt-4 sm:flex-row sm:px-6">
 						<Link
 							to={routes.signIn}
@@ -112,6 +166,7 @@ export default function Navbar() {
 						>
 							Sign In
 						</Link>
+
 						<Link
 							to={routes.getStarted}
 							onClick={closeMenu}
