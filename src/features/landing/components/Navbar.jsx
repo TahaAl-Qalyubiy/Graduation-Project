@@ -3,10 +3,10 @@ import { Link } from "react-router-dom";
 
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
-import HeadsetMicOutlinedIcon from "@mui/icons-material/HeadsetMicOutlined";
 import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
 import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
 
+import Logo from "../../../assets/img/Logo.png";
 import { brand, navItems, routes } from "../data/landingData";
 
 const focusRing =
@@ -65,9 +65,11 @@ export default function Navbar() {
 					onClick={closeMenu}
 					className={`flex items-center gap-2.5 rounded-lg ${focusRing}`}
 				>
-					<span className="flex h-9 w-9 items-center justify-center rounded-xl bg-(--primary) text-(--surface)">
-						<HeadsetMicOutlinedIcon fontSize="small" />
-					</span>
+					<img
+						src={Logo}
+						alt=""
+						className="flex h-9 w-9 items-center justify-center rounded-xl bg-(--bg) text-(--surface)"
+					/>
 
 					<span className="text-lg font-semibold tracking-tight text-(--text)">
 						{brand.name}
