@@ -15,7 +15,7 @@ export const brand = {
 // TEMPORARY: authentication pages are not implemented yet.
 // Replace these paths with the real routes once they exist.
 export const routes = {
-	signIn: "/sign-in",
+	signIn: "/login",
 	getStarted: "/register",
 };
 

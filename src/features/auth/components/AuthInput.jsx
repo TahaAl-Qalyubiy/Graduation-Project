@@ -1,11 +1,8 @@
 import { useId, useState } from "react";
+
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 
-/**
- * Visual-only input. No validation or form logic.
- * Pass `type="password"` to get a show/hide toggle automatically.
- */
 export default function AuthInput({
 	label,
 	type = "text",
@@ -18,9 +15,12 @@ export default function AuthInput({
 	maxLength,
 	className = "",
 	inputClassName = "",
+	registration,
+	error,
 }) {
 	const id = useId();
 	const [visible, setVisible] = useState(false);
+
 	const isPassword = type === "password";
 	const resolvedType = isPassword && visible ? "text" : type;
 
@@ -52,7 +52,13 @@ export default function AuthInput({
 					autoComplete={autoComplete}
 					inputMode={inputMode}
 					maxLength={maxLength}
-					className={`h-12 w-full rounded-xl border border-(--border) bg-(--surface-2) text-base text-(--text) placeholder:text-(--text2)/70 transition focus:border-(--primary) focus:outline-none focus:ring-4 focus:ring-(--primary)/15 disabled:cursor-not-allowed disabled:opacity-60 ${
+					aria-invalid={!!error}
+					{...registration}
+					className={`h-12 w-full rounded-xl border bg-(--surface-2) text-base text-(--text) placeholder:text-(--text2)/70 transition focus:outline-none focus:ring-4 disabled:cursor-not-allowed disabled:opacity-60 ${
+						error
+							? "border-red-500 focus:border-red-500 focus:ring-red-500/15"
+							: "border-(--border) focus:border-(--primary) focus:ring-(--primary)/15"
+					} ${
 						icon ? "pl-11" : "pl-4"
 					} ${isPassword ? "pr-12" : "pr-4"} ${inputClassName}`}
 				/>
@@ -64,7 +70,7 @@ export default function AuthInput({
 						disabled={disabled}
 						aria-label={visible ? "Hide password" : "Show password"}
 						aria-pressed={visible}
-						className="absolute right-1.5 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-lg text-(--text2) transition hover:bg-(--elevated) hover:text-(--text) focus:outline-none focus-visible:ring-2 focus-visible:ring-(--primary)"
+						className="absolute right-1.5 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-lg text-(--text2) transition hover:bg-(--elevated) hover:text-(--text)"
 					>
 						{visible ? (
 							<VisibilityOffIcon fontSize="small" />
@@ -74,6 +80,8 @@ export default function AuthInput({
 					</button>
 				)}
 			</div>
+
+			{error && <p className="mt-1.5 text-sm text-red-500">{error}</p>}
 		</div>
 	);
 }

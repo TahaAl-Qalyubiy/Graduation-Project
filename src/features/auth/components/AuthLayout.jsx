@@ -1,12 +1,7 @@
 import { Link } from "react-router-dom";
-import PsychologyAltIcon from "@mui/icons-material/PsychologyAlt";
 import { BRAND } from "../authData";
+import Logo from "../../../assets/img/Logo.png";
 
-/**
- * Reusable auth layout.
- * variant="centered" -> single centered card
- * variant="split"    -> form on the left, `aside` on the right (hidden below lg)
- */
 export function AuthBrand({ className = "" }) {
 	return (
 		<Link
@@ -14,9 +9,11 @@ export function AuthBrand({ className = "" }) {
 			className={`inline-flex items-center gap-2.5 rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-(--primary) ${className}`}
 			aria-label={`${BRAND.name} home`}
 		>
-			<span className="flex h-9 w-9 items-center justify-center rounded-xl bg-(--primary) text-white shadow-md">
-				<PsychologyAltIcon fontSize="small" />
-			</span>
+			<img
+				src={Logo}
+				alt=""
+				className="flex h-9 w-9 items-center justify-center rounded-xl bg-(--bg) text-(--surface)"
+			/>
 			<span className="text-xl font-bold tracking-tight text-(--text)">
 				{BRAND.name}
 			</span>
